@@ -179,7 +179,20 @@ public class KitchenSinkController {
         switch (event.getPostbackContent().getData()) {
         case "lancement_mobilisation":
         	String datetime = event.getPostbackContent().getParams().get("datetime");
-        	this.replyText(replyToken, "blablabla grand lancement d'une GM pour le "+datetime);
+        	this.replyText(replyToken, "Déclaration de Guerre!!!
+A tous les Francs Unis 
+
+Une GM sera organisée "+dateTime+"
+Inscription ici ( dans commentaires )
+
+IMPORTANT : les joueurs qui participent aux GM seront d'accord de se rendre disponible sur les 2 phases de combats qui sont les moments importants et décisifs (sauf en cas d'imprevu, travail ou obligations seront tout à fait compréhensibles) 
+
+- phase 1 premier soir et phase 2 en fonction des résultats. Les coalitions defensives doivent être armées le jour du lancement.
+Remplissage de fortins pour tout le monde( si nécessaire )
+Renforts Cité (Nos Mondiaux Nucléaires voir Guerre froide 😎)
+Formation des troupes en fonction de l'ennemi (s'il faut, demandez conseils)
+
+Chefs  de guerre  pas désigné"+datetime);
         	break;
         default:
             this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
