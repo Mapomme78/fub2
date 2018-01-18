@@ -221,7 +221,7 @@ public class KitchenSinkController {
                break;
             }
            case "mobilisation": {
-                String imageUrl = createUri("/static/buttons/1040.jpg");
+                String imageUrl = createUri("/static/buttons/GM.jpg");
                 ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                         imageUrl,
                         "Mobilisation GM",
