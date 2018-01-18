@@ -279,8 +279,20 @@ public class KitchenSinkController {
         	case "salut":
         	case "allo":
            case "bonjour": {
-    this.replyText(replyToken, "Bonjour "+ event.getSource()+"\nComment puis-je t'aider?");
-                break;
+                String userId = event.getSource().getUserId();
+                if (userId != null) {
+                    lineMessagingClient
+                            .getProfile(userId)
+                            .whenComplete((profile, throwable) -> {
+                                if (throwable != null) {
+                                    this.replyText(replyToken, throwable.getMessage());
+                                    return;
+                                }
+                                this.replyText(replyToken, "Bonjour "+ profile.getDisplayName() +"\nComment puis-je t'aider?");
+                           });
+                } else {
+                    this.replyText(replyToken, "Bot can't use profile API without user ID");
+               break;
             }
 //            case "bye": {
 //                Source source = event.getSource();
