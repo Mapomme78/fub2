@@ -131,7 +131,9 @@ public class KitchenSinkController {
         switch (event.getPostbackContent().getData()) {
         case "lancement_mobilisation":
         	String datetime = event.getPostbackContent().getParams().get("datetime");
-        	this.replyText(replyToken, "Déclaration de Guerre!!! \n"
+           String imageUrl = createUri("/static/buttons/GM.jpg");
+
+        	this.reply(replyToken, Arrays.asList(new TextMessage("Déclaration de Guerre!!! \n"
 +"A tous les Francs Unis \n"
 +"\n"
 +"Une GM sera organisée "+datetime+"\n"
@@ -144,7 +146,7 @@ public class KitchenSinkController {
 +"Renforts Cité (Nos Mondiaux Nucléaires voir Guerre froide)\n"
 +"Formation des troupes en fonction de l'ennemi (s'il faut, demandez conseils)\n"
 +"\n"
-+"Chefs  de guerre  pas désignés");
++"Chefs  de guerre  pas désignés")));
         	break;
         default:
             this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
