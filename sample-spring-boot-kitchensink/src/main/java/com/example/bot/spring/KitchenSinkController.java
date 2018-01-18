@@ -285,8 +285,8 @@ public class KitchenSinkController {
                             .getProfile(userId)
                             .whenComplete((profile, throwable) -> {
                                 if (throwable != null) {
-                                    this.replyText(replyToken, throwable.getMessage());
-                                    return;
+                                   this.replyText(replyToken, "Bonjour (ajoute-moi en ami)\nComment puis-je t'aider?");
+                                   return;
                                 }
                                 this.replyText(replyToken, "Bonjour "+ profile.getDisplayName() +"\nComment puis-je t'aider?");
                            });
@@ -319,9 +319,9 @@ public class KitchenSinkController {
 //                break;
 //            }
             case "mobilisation": {
-                String imageUrl = createUri("/static/buttons/GM.jpg");
+                //String imageUrl = createUri("/static/buttons/GM.jpg");
                 ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
-                        imageUrl,
+                        "",
                         "Mobilisation GM",
                         "Lancer un appel à mobilisation",
                         Arrays.asList(
