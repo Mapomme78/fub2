@@ -197,13 +197,7 @@ public class KitchenSinkController {
         default:
             this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
         }
-        
-//        "lancement_mobilisation",
-//        "datetime",
-//        basicSDF.format(new Date(System.currentTimeMillis())),
-//        "2100-12-31T23:59",
-       
-        this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
+       this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
     }
 
     @EventMapping
@@ -319,7 +313,7 @@ public class KitchenSinkController {
 //                break;
 //            }
             case "mobilisation": {
-                String imageUrl = createUri("/static/buttons/GM.jpg");
+                String imageUrl = createUri("/static/buttons/1040.jpg");
                 ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                         imageUrl,
                         "Mobilisation GM",
