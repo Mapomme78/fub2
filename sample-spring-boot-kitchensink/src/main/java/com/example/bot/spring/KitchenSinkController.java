@@ -292,6 +292,7 @@ public class KitchenSinkController {
                            });
                 } else {
                     this.replyText(replyToken, "Bot can't use profile API without user ID");
+                }
                break;
             }
 //            case "bye": {
