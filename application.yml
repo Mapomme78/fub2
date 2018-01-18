@@ -1,3 +1,4 @@
+
 #
 # Copyright 2016 LINE Corporation
 #
@@ -15,8 +16,8 @@
 
 
 line.bot:
-  channel-token: '+srtHKEmdOpSJybewsxRlzey2kFlxREo8HQHsx9Hcm9rkmCxCWYS5SEDpNzhlxMl2nsw2TBN5+AyVppeLlAKK7YmoO4ucLlvOxuYiFEYpY8TKYxK8/+4+cSpligCsDBfbcrvXJQD/v5l63ocrbEZQwdB04t89/1O/w1cDnyilFU='
-  channel-secret: '511c9c4e7e66cb2f4b0e5091df7fd2ad'
+  channel-token: '8m2zw/o8wXKvSC49oyiH77wu5jF4FhJq8b7rHnGZi6byyzYeLHAcefbCDWrVKuqVxPRW9aYbbeOKalc/U2jQfz/1thvbih0pPm4KKsBsHxPAd+2lFAMwZ6AcXZCvQzDCnO+Ft8yYDSwd55MK+UvAygdB04t89/1O/w1cDnyilFU='
+  channel-secret: '0c7af4dfb120252f07de5321851c9d70'
   handler.path: /callback
 
 # To remove Client wire logs. Please comment out following lines.
