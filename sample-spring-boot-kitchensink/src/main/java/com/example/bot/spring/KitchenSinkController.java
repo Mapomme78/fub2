@@ -95,24 +95,24 @@ public class KitchenSinkController {
 
     @EventMapping
     public void handleStickerMessageEvent(MessageEvent<StickerMessageContent> event) {
-        handleSticker(event.getReplyToken(), event.getMessage());
+        //handleSticker(event.getReplyToken(), event.getMessage());
     }
 
     @EventMapping
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
-        LocationMessageContent locationMessage = event.getMessage();
+        /*LocationMessageContent locationMessage = event.getMessage();
         reply(event.getReplyToken(), new LocationMessage(
                 locationMessage.getTitle(),
                 locationMessage.getAddress(),
                 locationMessage.getLatitude(),
                 locationMessage.getLongitude()
-        ));
+        ));*/
     }
 
     @EventMapping
     public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
         // You need to install ImageMagick
-        handleHeavyContent(
+      /*  handleHeavyContent(
                 event.getReplyToken(),
                 event.getMessage().getId(),
                 responseBody -> {
@@ -125,24 +125,24 @@ public class KitchenSinkController {
                             previewImg.path.toString());
                     reply(((MessageEvent) event).getReplyToken(),
                           new ImageMessage(jpg.getUri(), jpg.getUri()));
-                });
+                });*/
     }
 
     @EventMapping
     public void handleAudioMessageEvent(MessageEvent<AudioMessageContent> event) throws IOException {
-        handleHeavyContent(
+       /* handleHeavyContent(
                 event.getReplyToken(),
                 event.getMessage().getId(),
                 responseBody -> {
                     DownloadedContent mp4 = saveContent("mp4", responseBody);
                     reply(event.getReplyToken(), new AudioMessage(mp4.getUri(), 100));
-                });
+                });*/
     }
 
     @EventMapping
     public void handleVideoMessageEvent(MessageEvent<VideoMessageContent> event) throws IOException {
         // You need to install ffmpeg and ImageMagick.
-        handleHeavyContent(
+        /*handleHeavyContent(
                 event.getReplyToken(),
                 event.getMessage().getId(),
                 responseBody -> {
@@ -153,7 +153,7 @@ public class KitchenSinkController {
                            previewImg.path.toString());
                     reply(((MessageEvent) event).getReplyToken(),
                           new VideoMessage(mp4.getUri(), previewImg.uri));
-                });
+                });*/
     }
 
     @EventMapping
@@ -163,14 +163,14 @@ public class KitchenSinkController {
 
     @EventMapping
     public void handleFollowEvent(FollowEvent event) {
-        String replyToken = event.getReplyToken();
-        this.replyText(replyToken, "Got followed event");
+        //String replyToken = event.getReplyToken();
+        //this.replyText(replyToken, "Got followed event");
     }
 
     @EventMapping
     public void handleJoinEvent(JoinEvent event) {
-        String replyToken = event.getReplyToken();
-        this.replyText(replyToken, "Joined " + event.getSource());
+        //String replyToken = event.getReplyToken();
+        //this.replyText(replyToken, "Joined " + event.getSource());
     }
 
     @EventMapping
@@ -208,8 +208,8 @@ public class KitchenSinkController {
 
     @EventMapping
     public void handleBeaconEvent(BeaconEvent event) {
-        String replyToken = event.getReplyToken();
-        this.replyText(replyToken, "Got beacon message " + event.getBeacon().getHwid());
+        //String replyToken = event.getReplyToken();
+        //this.replyText(replyToken, "Got beacon message " + event.getBeacon().getHwid());
     }
 
     @EventMapping
