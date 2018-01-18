@@ -178,7 +178,7 @@ public class KitchenSinkController {
         String replyToken = event.getReplyToken();
         switch (event.getPostbackContent().getData()) {
         case "lancement_mobilisation":
-        	String datetime = event.getPostbackContent().getParams().get("datetime");
+        	String datetime = event.getPostbackContent().getParams().get("date de lancement");
         	this.replyText(replyToken, "Déclaration de Guerre!!! \n"
 +"A tous les Francs Unis \n"
 +"\n"
@@ -278,28 +278,9 @@ public class KitchenSinkController {
         	case "cc":
         	case "salut":
         	case "allo":
-            case "bonjour": {
-                String userId = event.getSource().getUserId();
-                if (userId != null) {
-                    lineMessagingClient
-                            .getProfile(userId)
-                            .whenComplete((profile, throwable) -> {
-                                if (throwable != null) {
-                                    this.replyText(replyToken, throwable.getMessage());
-                                    return;
-                                }
-
-                                this.reply(
-                                        replyToken,
-                                        Arrays.asList(new TextMessage(
-                                                              "Bonjour " + profile.getDisplayName()),
-                                                      new TextMessage("Comment puis-je t'aider?"))
-                                );
-
-                            });
-                } else {
-                    this.replyText(replyToken, "Bot can't use profile API without user ID");
-                }
+           case "bonjour": {
+    this.replyText(replyToken, "Bonjour "+ event.getSource()+"\nComment puis-je t'aider?");
+               }
                 break;
             }
 //            case "bye": {
@@ -326,7 +307,7 @@ public class KitchenSinkController {
 //                break;
 //            }
             case "mobilisation": {
-                String imageUrl = createUri("/static/buttons/1040.jpg");
+                String imageUrl = createUri("/static/buttons/GM.jpg");
                 ButtonsTemplate buttonsTemplate = new ButtonsTemplate(
                         imageUrl,
                         "Mobilisation GM",
@@ -334,7 +315,7 @@ public class KitchenSinkController {
                         Arrays.asList(
                         		new DatetimePickerAction("Datetime",
                                         "lancement_mobilisation",
-                                        "datetime",
+                                        "date de lancement",
                                         basicSDF.format(new Date(System.currentTimeMillis())),
                                         "2100-12-31T23:59",
                                         "1900-01-01T00:00")
