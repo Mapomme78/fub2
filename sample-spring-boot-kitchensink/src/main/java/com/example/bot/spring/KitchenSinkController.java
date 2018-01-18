@@ -179,20 +179,20 @@ public class KitchenSinkController {
         switch (event.getPostbackContent().getData()) {
         case "lancement_mobilisation":
         	String datetime = event.getPostbackContent().getParams().get("datetime");
-        	this.replyText(replyToken, "Déclaration de Guerre!!! \
-A tous les Francs Unis \
-\
-Une GM sera organisée "+dateTime+"\
-Inscription ici ( dans commentaires )\
-\
-IMPORTANT : les joueurs qui participent aux GM seront d'accord de se rendre disponible sur les 2 phases de combats qui sont les moments importants et décisifs (sauf en cas d'imprevu, travail ou obligations seront tout à fait compréhensibles) \
-\
-- phase 1 premier soir et phase 2 en fonction des résultats. Les coalitions defensives doivent être armées le jour du lancement.\
-Remplissage de fortins pour tout le monde( si nécessaire )\
-Renforts Cité (Nos Mondiaux Nucléaires voir Guerre froide)\
-Formation des troupes en fonction de l'ennemi (s'il faut, demandez conseils)\
-\
-Chefs  de guerre  pas désignés");
+        	this.replyText(replyToken, "Déclaration de Guerre!!! \n"
++"A tous les Francs Unis \n"
++"\n"
++"Une GM sera organisée "+dateTime+"\n"
++"Inscription ici ( dans commentaires )\n"
++"\n"
++"IMPORTANT : les joueurs qui participent aux GM seront d'accord de se rendre disponible sur les 2 phases de combats qui sont les moments importants et décisifs (sauf en cas d'imprevu, travail ou obligations seront tout à fait compréhensibles) \n"
++"\n"
++"- phase 1 premier soir et phase 2 en fonction des résultats. Les coalitions defensives doivent être armées le jour du lancement.\n"
++"Remplissage de fortins pour tout le monde( si nécessaire )\n"
++"Renforts Cité (Nos Mondiaux Nucléaires voir Guerre froide)\n"
++"Formation des troupes en fonction de l'ennemi (s'il faut, demandez conseils)\n"
++"\n"
++"Chefs  de guerre  pas désignés");
         	break;
         default:
             this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
