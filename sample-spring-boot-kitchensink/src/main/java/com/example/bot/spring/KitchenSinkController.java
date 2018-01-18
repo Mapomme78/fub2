@@ -182,7 +182,7 @@ public class KitchenSinkController {
         	this.replyText(replyToken, "Déclaration de Guerre!!! \n"
 +"A tous les Francs Unis \n"
 +"\n"
-+"Une GM sera organisée "+dateTime+"\n"
++"Une GM sera organisée "+datetime+"\n"
 +"Inscription ici ( dans commentaires )\n"
 +"\n"
 +"IMPORTANT : les joueurs qui participent aux GM seront d'accord de se rendre disponible sur les 2 phases de combats qui sont les moments importants et décisifs (sauf en cas d'imprevu, travail ou obligations seront tout à fait compréhensibles) \n"
@@ -265,7 +265,7 @@ public class KitchenSinkController {
 
     private void handleTextContent(String replyToken, Event event, TextMessageContent content)
             throws Exception {
-        String text = content.getText();
+        String text = content.getText().trim();
         if (!text.startsWith("@fub ")) {
         	return;
         }
