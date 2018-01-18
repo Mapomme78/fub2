@@ -133,7 +133,9 @@ public class KitchenSinkController {
         	String datetime = event.getPostbackContent().getParams().get("datetime");
            String imageUrl = createUri("/static/buttons/GM.jpg");
 
-        	this.reply(replyToken, Arrays.asList(new TextMessage("Déclaration de Guerre!!! \n"
+        	this.reply(replyToken, Arrays.asList(
+                    new ImageMessage(imageUrl, imageUrl),
+                    new TextMessage("Déclaration de Guerre!!! \n"
 +"A tous les Francs Unis \n"
 +"\n"
 +"Une GM sera organisée "+datetime+"\n"
