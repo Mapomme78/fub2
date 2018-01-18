@@ -280,7 +280,6 @@ public class KitchenSinkController {
         	case "allo":
            case "bonjour": {
     this.replyText(replyToken, "Bonjour "+ event.getSource()+"\nComment puis-je t'aider?");
-               }
                 break;
             }
 //            case "bye": {
