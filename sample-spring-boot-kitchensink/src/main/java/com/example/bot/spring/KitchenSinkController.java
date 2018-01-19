@@ -31,7 +31,6 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import com.linecorp.bot.model.action.DatetimePickerAction;
 import com.linecorp.bot.model.message.template.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
@@ -133,9 +132,7 @@ public class KitchenSinkController {
         	String datetime = event.getPostbackContent().getParams().get("datetime");
            String imageUrl = createUri("/static/buttons/GM.jpg");
 
-        	this.reply(replyToken, Arrays.asList(
-                    new ImageMessage(imageUrl, imageUrl),
-                    new TextMessage("Déclaration de Guerre!!! \n"
+        	this.replyText(replyToken, "Déclaration de Guerre!!! \n"
 +"A tous les Francs Unis \n"
 +"\n"
 +"Une GM sera organisée "+datetime+"\n"
@@ -148,7 +145,7 @@ public class KitchenSinkController {
 +"Renforts Cité (Nos Mondiaux Nucléaires voir Guerre froide)\n"
 +"Formation des troupes en fonction de l'ennemi (s'il faut, demandez conseils)\n"
 +"\n"
-+"Chefs  de guerre  pas désignés")));
++"Chefs  de guerre  pas désignés");
         	break;
         default:
             this.replyText(replyToken, "Got postback data " + event.getPostbackContent().getData() + ", param " + event.getPostbackContent().getParams().toString());
@@ -242,6 +239,9 @@ public class KitchenSinkController {
                 this.reply(replyToken, templateMessage);
                 break;
             }
+           case "richmenu": {
+        	   this.replyText(replyToken, lineMessagingClient.getRichMenuList());
+           }
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
                 break;
