@@ -240,10 +240,15 @@ public class KitchenSinkController {
                 this.reply(replyToken, templateMessage);
                 break;
             }
-           case "imagemap":
-               this.reply(replyToken, new ImagemapMessage(
-                       createUri("/static/rich"),
-                       "This is alt text",
+           case "exercices":
+           case "exos":
+           case "exercice":
+           case "exo":
+               this.reply(replyToken, Arrays.asList(
+            		   new TextMessage("Liste d'exercices pour aider à améliorer ses compétences d'attaquant.\nDans l'idéal, les exercices peuvent être pratiqués avec les défis d'autres Francs de même niveau (pour éviter de dépenser des unités)"),
+            		   new ImagemapMessage(
+                       createUri("/static/exos_v1"),
+                       "Image cliquable des exercices",
                        new ImagemapBaseSize(1040, 1040),
                        Arrays.asList(
                                new MessageImagemapAction(
@@ -259,7 +264,7 @@ public class KitchenSinkController {
                                        )
                                )
                        )
-               ));
+               )));
                break;
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
