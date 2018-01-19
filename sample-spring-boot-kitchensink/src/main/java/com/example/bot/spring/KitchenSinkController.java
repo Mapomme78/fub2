@@ -240,16 +240,39 @@ public class KitchenSinkController {
                 this.reply(replyToken, templateMessage);
                 break;
             }
-           case "richmenu": {
-        	   lineMessagingClient.getRichMenuList().whenComplete((richMenuListResponse, throwable) -> {
-                   if (throwable != null) {
-                       this.replyText(replyToken, "erreur:"+throwable);
-                       return;
-                    }
-                    this.replyText(replyToken, "RichMenuListResponse="+richMenuListResponse);
-               });
-        	   break;
-           }
+           case "imagemap":
+               this.reply(replyToken, new ImagemapMessage(
+                       createUri("/static/rich"),
+                       "This is alt text",
+                       new ImagemapBaseSize(1040, 1040),
+                       Arrays.asList(
+                               new URIImagemapAction(
+                                       "https://store.line.me/family/manga/en",
+                                       new ImagemapArea(
+                                               0, 0, 520, 520
+                                       )
+                               ),
+                               new URIImagemapAction(
+                                       "https://store.line.me/family/music/en",
+                                       new ImagemapArea(
+                                               520, 0, 520, 520
+                                       )
+                               ),
+                               new URIImagemapAction(
+                                       "https://store.line.me/family/play/en",
+                                       new ImagemapArea(
+                                               0, 520, 520, 520
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "URANAI!",
+                                       new ImagemapArea(
+                                               520, 520, 520, 520
+                                       )
+                               )
+                       )
+               ));
+               break;
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
                 break;
