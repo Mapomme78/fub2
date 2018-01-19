@@ -308,6 +308,84 @@ public class KitchenSinkController {
                        )
                )));
                break;
+           case "bases":
+           case "base":
+               this.reply(replyToken, Arrays.asList(
+            		   new TextMessage("Exemples de bases GM bien construites, qui peuvent servir d'inspiration..."),
+            		   new ImagemapMessage(
+                       createUri("/static/bases_v1"),
+                       "Image cliquable des bases",
+                       new ImagemapBaseSize(713, 1040),
+                       Arrays.asList(
+                               new MessageImagemapAction(
+                                       "@fub bases pierre",
+                                       new ImagemapArea(
+                                               0, 0, 220, 180
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases bronze",
+                                       new ImagemapArea(
+                                               220, 0, 420, 180
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases fer",
+                                       new ImagemapArea(
+                                               420, 0, 680, 180
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases classique",
+                                       new ImagemapArea(
+                                               710, 0, 1040, 180
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases moyen age",
+                                       new ImagemapArea(
+                                               0, 250, 250, 430
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases poudre",
+                                       new ImagemapArea(
+                                               250, 250, 460, 430
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases lumières",
+                                       new ImagemapArea(
+                                               500, 250, 630, 430
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases indust",
+                                       new ImagemapArea(
+                                               700, 250, 1040, 440
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases mond",
+                                       new ImagemapArea(
+                                               0, 490, 200, 713
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases nuc",
+                                       new ImagemapArea(
+                                               250, 490, 440, 713
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub bases guerre froide",
+                                       new ImagemapArea(
+                                               470, 490, 690, 713
+                                       )
+                               )
+                       )
+               )));
+               break;
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
                 break;
