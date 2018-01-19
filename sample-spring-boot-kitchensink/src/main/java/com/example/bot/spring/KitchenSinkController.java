@@ -266,6 +266,48 @@ public class KitchenSinkController {
                        )
                )));
                break;
+           case "merveilles":
+           case "merveille":
+               this.reply(replyToken, Arrays.asList(
+            		   new TextMessage("Explication des merveilles\n\nVous avez 3 types de merveilles: offensive, défensive et économique. Certaines merveilles sont de plusieurs types en même temps (ex: armée de terre cuite offensive et défensive)"),
+            		   new ImagemapMessage(
+                       createUri("/static/merveilles_v1"),
+                       "Image cliquable des merveilles",
+                       new ImagemapBaseSize(1040, 713),
+                       Arrays.asList(
+                               new MessageImagemapAction(
+                                       "@fub merveilles bronze",
+                                       new ImagemapArea(
+                                               220, 0, 420, 180
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub merveilles classique",
+                                       new ImagemapArea(
+                                               710, 0, 1040, 180
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub merveilles poudre",
+                                       new ImagemapArea(
+                                               250, 250, 460, 430
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub merveilles industriel",
+                                       new ImagemapArea(
+                                               250, 700, 1040, 440
+                                       )
+                               ),
+                               new MessageImagemapAction(
+                                       "@fub merveilles nucleaire",
+                                       new ImagemapArea(
+                                               250, 490, 440, 713
+                                       )
+                               )
+                       )
+               )));
+               break;
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
                 break;
