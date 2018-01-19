@@ -296,7 +296,7 @@ public class KitchenSinkController {
                                new MessageImagemapAction(
                                        "@fub merveilles industriel",
                                        new ImagemapArea(
-                                               250, 700, 1040, 440
+                                               700, 250, 1040, 440
                                        )
                                ),
                                new MessageImagemapAction(
