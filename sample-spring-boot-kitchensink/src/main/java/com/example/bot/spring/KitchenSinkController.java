@@ -273,7 +273,7 @@ public class KitchenSinkController {
             		   new ImagemapMessage(
                        createUri("/static/merveilles_v1"),
                        "Image cliquable des merveilles",
-                       new ImagemapBaseSize(1040, 713),
+                       new ImagemapBaseSize(713, 1040),
                        Arrays.asList(
                                new MessageImagemapAction(
                                        "@fub merveilles bronze",
