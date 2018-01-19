@@ -255,7 +255,7 @@ public class KitchenSinkController {
                                new MessageImagemapAction(
                                        "@fub exos artillerie",
                                        new ImagemapArea(
-                                               0, 260, 640, 400
+                                               260, 0, 640, 400
                                        )
                                )
                        )
