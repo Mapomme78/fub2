@@ -240,7 +240,13 @@ public class KitchenSinkController {
                 break;
             }
            case "richmenu": {
-        	   this.replyText(replyToken, lineMessagingClient.getRichMenuList());
+        	   lineMessagingClient.getRichMenuList().whenComplete((richMenuListResponse, throwable) -> {
+                   if (throwable != null) {
+                       this.replyText(replyToken, "erreur:"+throwable);
+                       return;
+                    }
+                    this.replyText(replyToken, "RichMenuListResponse="+richMenuListResponse);
+               });
            }
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
