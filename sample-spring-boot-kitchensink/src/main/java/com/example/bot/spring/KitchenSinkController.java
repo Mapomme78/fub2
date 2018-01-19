@@ -246,28 +246,16 @@ public class KitchenSinkController {
                        "This is alt text",
                        new ImagemapBaseSize(1040, 1040),
                        Arrays.asList(
-                               new URIImagemapAction(
-                                       "https://store.line.me/family/manga/en",
+                               new MessageImagemapAction(
+                                       "@fub exos déploiement",
                                        new ImagemapArea(
-                                               0, 0, 520, 520
-                                       )
-                               ),
-                               new URIImagemapAction(
-                                       "https://store.line.me/family/music/en",
-                                       new ImagemapArea(
-                                               520, 0, 520, 520
-                                       )
-                               ),
-                               new URIImagemapAction(
-                                       "https://store.line.me/family/play/en",
-                                       new ImagemapArea(
-                                               0, 520, 520, 520
+                                               0, 0, 260, 400
                                        )
                                ),
                                new MessageImagemapAction(
-                                       "URANAI!",
+                                       "@fub exos artillerie",
                                        new ImagemapArea(
-                                               520, 520, 520, 520
+                                               0, 260, 640, 400
                                        )
                                )
                        )
