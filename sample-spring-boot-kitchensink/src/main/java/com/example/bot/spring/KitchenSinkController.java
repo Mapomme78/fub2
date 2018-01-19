@@ -248,6 +248,7 @@ public class KitchenSinkController {
                     }
                     this.replyText(replyToken, "RichMenuListResponse="+richMenuListResponse);
                });
+        	   break;
            }
            default:
                 log.info("Ignored unknown message {}: {}", replyToken, text);
