@@ -48,20 +48,17 @@ public class KitchenSinkApplication {
         SpringApplication.run(KitchenSinkApplication.class, args);
     }
 
-    public static Connection getConnection() throws URISyntaxException, SQLException {
-    	//return dataSource.getConnection();
-URI dbUri = new URI(System.getenv("DATABASE_URL"));
+     public static Connection getConnection() throws URISyntaxException, SQLException {
+        URI dbUri = new URI(System.getenv("DATABASE_URL"));
 
         String username = dbUri.getUserInfo().split(":")[0];
         String password = dbUri.getUserInfo().split(":")[1];
         String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
 
-        return DriverManager.getConnection(dbUrl, username, password);
-    	/*String dbUrl = System.getenv("JDBC_DATABASE_URL");
-    	Connection connection = DriverManager.getConnection(dbUrl);
+        Connection connection = DriverManager.getConnection(dbUrl, username, password);
     	try (Statement stmt = connection.createStatement()) {
     		stmt.execute("CREATE TABLE IF NOT EXISTS 'birthdays' (name text, date text, lastWished numeric, PRIMARY KEY (name))");
     	}
-    	return connection; */
+    	return connection;
     }
 }
