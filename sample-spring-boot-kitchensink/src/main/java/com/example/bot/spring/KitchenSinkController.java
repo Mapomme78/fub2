@@ -213,11 +213,15 @@ public class KitchenSinkController {
     	}
     	
     	private long getDateFromString(String dateAsString) throws IllegalArgumentException {
-    		Date parsedDate = minimalSDF.parse(dateAsString);
-    		if (parsedDate == null) {
+    		try {
+    			Date parsedDate = minimalSDF.parse(dateAsString);
+        		if (parsedDate == null) {
+        			throw new IllegalArgumentException("Unable to parse "+dateAsString);
+        		}
+        		return parsedDate.getTime();
+    		} catch (Exception e) {
     			throw new IllegalArgumentException("Unable to parse "+dateAsString);
     		}
-    		return parsedDate.getTime();
     	}
 
 		public boolean shouldWishBirthday() {
@@ -294,7 +298,12 @@ public class KitchenSinkController {
     private void storeBirthdays() {
     	File birthdaysFile = new File(KitchenSinkApplication.downloadedContentDir.toFile(), BIRTHDAYS_FILE);
     	if (!birthdaysFile.exists()) {
-    		birthdaysFile.createNewFile();
+    		try {
+    			birthdaysFile.createNewFile();
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    			return;
+    		}
     	}
 		try (FileOutputStream fos = new FileOutputStream(birthdaysFile); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
 			oos.writeObject(birthdays);
