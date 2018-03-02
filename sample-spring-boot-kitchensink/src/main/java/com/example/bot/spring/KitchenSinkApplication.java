@@ -57,7 +57,7 @@ public class KitchenSinkApplication {
 
         Connection connection = DriverManager.getConnection(dbUrl, username, password);
     	try (Statement stmt = connection.createStatement()) {
-    		stmt.execute("CREATE TABLE IF NOT EXISTS birthdays (name text, date text, lastWished numeric, PRIMARY KEY (name))");
+    		stmt.execute("CREATE TABLE IF NOT EXISTS birthdays (pseudo text, date text, lastWished numeric, PRIMARY KEY (pseudo))");
     	}
     	return connection;
     }

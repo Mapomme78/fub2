@@ -194,8 +194,8 @@ public class KitchenSinkController {
     }
 
 	private static final SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
-	private static final String INSERT_STATEMENT = "INSERT INTO birthdays (name, date, lastWished) VALUES(?, ?, ?)";
-	private static final String DEL_STATEMENT = "DELETE FROM birthdays WHERE name=?";
+	private static final String INSERT_STATEMENT = "INSERT INTO birthdays (pseudo, date, lastWished) VALUES(?, ?, ?)";
+	private static final String DEL_STATEMENT = "DELETE birthdays WHERE pseudo=?";
 	
     private Message addOrReplaceBirthday(String name, String dateAsString) {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
@@ -246,6 +246,7 @@ public class KitchenSinkController {
     			} else {
     				newLineToAdd.append(" souhaité pour la dernière fois en ");
     				newLineToAdd.append(lastWished);
+newLineToAdd.append("\n");
     			}
     			if (sb.length() + newLineToAdd.length() > 500) {
     				ret.add(new TextMessage(sb.toString()));
@@ -255,7 +256,9 @@ public class KitchenSinkController {
     		}
     		if (sb.length() != 0) {
     			ret.add(new TextMessage(sb.toString()));
-    		}
+    		} else if (ret.isEmpty()) {
+             return Collections.singletonList(new TextMessage("La liste d'anniversaires est vide, désolé..."));
+           }
     		return ret;
     	} catch (Exception e) {
     		log.error("", e);
