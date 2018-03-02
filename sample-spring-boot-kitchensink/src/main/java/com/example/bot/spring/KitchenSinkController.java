@@ -217,9 +217,8 @@ public class KitchenSinkController {
         switch (text.toLowerCase()) {
         	case "testfub":
         		String useId = event.getSource().getUserId();
-        		String groupId = event.getSource().getGroupId();
-        		String roomId = event.getSource().getRoomId();
-                this.replyText(replyToken, "user ID="+useId+", groupId="+groupId+", roomId="+roomId);
+        		String senderId = event.getSource().getSenderId();
+                this.replyText(replyToken, "user ID="+useId+", senderId="+senderId+", source class="+event.getSource().getClass());
         		break;
         	case "hello":
         	case "coucou":
