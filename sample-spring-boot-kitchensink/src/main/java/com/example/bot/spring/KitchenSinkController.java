@@ -94,6 +94,7 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import sun.security.util.Length;
 
 @Slf4j
 @LineMessageHandler
@@ -211,8 +212,13 @@ public class KitchenSinkController {
     		this.lastWishedYear = Calendar.getInstance().get(Calendar.YEAR);
     	}
     	
+    	static private SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
     	private long getDateFromString(String dateAsString) throws IllegalArgumentException {
-    		return 0;
+    		Date parsedDate = minimalSDF.parse(dateAsString);
+    		if (parsedDate == null) {
+    			throw new IllegalArgumentException("Unable to parse "+dateAsString);
+    		}
+    		return parsedDate.getTime();
     	}
 
 		public boolean shouldWishBirthday() {
@@ -279,7 +285,8 @@ public class KitchenSinkController {
     	}
     	for (Entry<String, BirthdayDetails> entry: birthdays.entrySet()) {
     		if (entry.getValue().shouldWishBirthday()) {
-    			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+entry.getKey())));
+    			lineMessagingClient.pushMessage(new PushMessage("Cfdf6437983461c70bd606684ccf5d925", new TextMessage("Bon anniversaire "+entry.getKey())));
+//    			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+entry.getKey())));
     			entry.getValue().setWishedThisYear();
     		}
     	}
@@ -301,7 +308,7 @@ public class KitchenSinkController {
     	File birthdaysFile = new File(KitchenSinkApplication.downloadedContentDir.toFile(), BIRTHDAYS_FILE);
     	if (birthdaysFile.exists()) {
     		try (FileInputStream fis = new FileInputStream(birthdaysFile); ObjectInputStream ois = new ObjectInputStream(fis)) {
-    			birthdays = (Map<String, BirthdayDetails>) ois.readObject();
+    			birthdays = (Map<String, KitchenSinkController.BirthdayDetails>) ois.readObject();
     			return;
     		} catch (Exception e) {
     			e.printStackTrace();
@@ -349,6 +356,13 @@ public class KitchenSinkController {
         	text = text.replaceFirst("anniv ", "");
         	if (text.startsWith("list")) {
         		this.reply(replyToken, listBirthdays());
+        	} else if (text.startsWith("ajout")) {
+        		String[] decoupage = text.split(" ");
+        		if (len(decoupage) == 3) {
+        			this.reply(replyToken, addOrReplaceBirthday(decoupage[1], decoupage[2]));
+        		} else {
+        			this.reply(replyToken, new TextMessage("Le format attendu est: @fub anniv ajout Machintruc 29-02"));
+        		}
         	}
         	return;
         }
