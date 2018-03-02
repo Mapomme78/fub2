@@ -17,6 +17,8 @@
 package com.example.bot.spring;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
+import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -28,7 +30,9 @@ public class KitchenSinkApplication {
     static Path downloadedContentDir;
 
     public static void main(String[] args) throws IOException {
-        downloadedContentDir = Files.createTempDirectory("line-bot");
+    	try {
+    		downloadedContentDir = Files.createDirectory(FileSystems.getDefault().getPath("line-bot"));
+    	} catch (FileAlreadyExistsException ignore) {}
         SpringApplication.run(KitchenSinkApplication.class, args);
     }
 

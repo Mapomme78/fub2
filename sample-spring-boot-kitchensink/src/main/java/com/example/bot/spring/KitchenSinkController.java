@@ -89,44 +89,54 @@ public class KitchenSinkController {
 
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
+        checkBirthday();
         TextMessageContent message = event.getMessage();
         handleTextContent(event.getReplyToken(), event, message);
     }
 
     @EventMapping
     public void handleStickerMessageEvent(MessageEvent<StickerMessageContent> event) {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleLocationMessageEvent(MessageEvent<LocationMessageContent> event) {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleImageMessageEvent(MessageEvent<ImageMessageContent> event) throws IOException {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleAudioMessageEvent(MessageEvent<AudioMessageContent> event) throws IOException {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleVideoMessageEvent(MessageEvent<VideoMessageContent> event) throws IOException {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleUnfollowEvent(UnfollowEvent event) {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleFollowEvent(FollowEvent event) {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleJoinEvent(JoinEvent event) {
+        checkBirthday();
    }
 
     @EventMapping
     public void handlePostbackEvent(PostbackEvent event) {
+        checkBirthday();
         String replyToken = event.getReplyToken();
         switch (event.getPostbackContent().getData()) {
         case "lancement_mobilisation":
@@ -156,13 +166,19 @@ public class KitchenSinkController {
 
     @EventMapping
     public void handleBeaconEvent(BeaconEvent event) {
+        checkBirthday();
    }
 
     @EventMapping
     public void handleOtherEvent(Event event) {
+        checkBirthday();
         log.info("Received message(Ignored): {}", event);
     }
 
+    private void checkBirthday() {
+    	
+    }
+    
     private void reply(@NonNull String replyToken, @NonNull Message message) {
         reply(replyToken, Collections.singletonList(message));
     }
@@ -199,6 +215,12 @@ public class KitchenSinkController {
         text = text.replaceFirst("@fub ", "");
         log.info("Got text message from {}: {}", replyToken, text);
         switch (text.toLowerCase()) {
+        	case "testfub":
+        		String userId = event.getSource().getUserId();
+        		String groupId = event.getSource().getGroupId();
+        		String roomId = event.getSource().getRoomId();
+                this.replyText(replyToken, "user ID="+userId+", groupId="+groupId+", roomId="+roomId);
+        		break;
         	case "hello":
         	case "coucou":
         	case "hi":
