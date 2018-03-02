@@ -192,6 +192,7 @@ public class KitchenSinkController {
         log.info("Received message(Ignored): {}", event);
     }
 
+	static private SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
     private class BirthdayDetails implements Serializable {
     	private static final long serialVersionUID = 1L;
     	private long date;
@@ -211,7 +212,6 @@ public class KitchenSinkController {
     		this.lastWishedYear = Calendar.getInstance().get(Calendar.YEAR);
     	}
     	
-    	static private SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
     	private long getDateFromString(String dateAsString) throws IllegalArgumentException {
     		Date parsedDate = minimalSDF.parse(dateAsString);
     		if (parsedDate == null) {
@@ -357,7 +357,7 @@ public class KitchenSinkController {
         		this.reply(replyToken, listBirthdays());
         	} else if (text.startsWith("ajout")) {
         		String[] decoupage = text.split(" ");
-        		if (len(decoupage) == 3) {
+        		if (decoupage.length == 3) {
         			this.reply(replyToken, addOrReplaceBirthday(decoupage[1], decoupage[2]));
         		} else {
         			this.reply(replyToken, new TextMessage("Le format attendu est: @fub anniv ajout Machintruc 29-02"));

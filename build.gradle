@@ -136,7 +136,7 @@ subprojects {
     }
 
     compileJava {
-        options.compilerArgs << '-Xlint:all' << '-Werror' << '-Xlint:-processing' << '-parameters'
+        options.compilerArgs << '-Xlint:all' << '-Xlint:-processing' << '-parameters'
     }
 
     project.plugins.withType(org.springframework.boot.gradle.plugin.SpringBootPlugin) {
