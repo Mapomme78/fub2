@@ -94,7 +94,6 @@ import com.linecorp.bot.spring.boot.annotation.LineMessageHandler;
 import lombok.NonNull;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
-import sun.security.util.Length;
 
 @Slf4j
 @LineMessageHandler
