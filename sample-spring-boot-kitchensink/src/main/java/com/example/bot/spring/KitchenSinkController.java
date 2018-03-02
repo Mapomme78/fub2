@@ -278,8 +278,8 @@ newLineToAdd.append("\n");
     			int lastWished = rs.getInt(3);
     			
     			if (currentDate.equals(date) && lastWished != currentYear) {
-        			lineMessagingClient.pushMessage(new PushMessage("Cfdf6437983461c70bd606684ccf5d925", new TextMessage("Bon anniversaire "+name)));
-//        			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+name)));
+        			//lineMessagingClient.pushMessage(new PushMessage("Cfdf6437983461c70bd606684ccf5d925", new TextMessage("Bon anniversaire "+name)));
+        			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+name+"(birthday)(gift)")));
         			try (   PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
                           PreparedStatement updateStmt = connection.prepareStatement(INSERT_STATEMENT)) {
                       delStmt.setString(1, name);
