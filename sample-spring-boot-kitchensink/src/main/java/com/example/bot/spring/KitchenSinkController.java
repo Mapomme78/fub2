@@ -225,7 +225,7 @@ public class KitchenSinkController {
     	}
 
 		public boolean shouldWishBirthday() {
-			return false;
+			return minimalSDF.format(new Date(System.currentTimeMillis())).equalsIgnoreCase(minimalSDF.format(new Date(date)));
 		}
 		
 		@Override
@@ -364,14 +364,18 @@ public class KitchenSinkController {
         	text = text.replaceFirst("anniv ", "");
         	if (text.startsWith("list")) {
         		this.reply(replyToken, listBirthdays());
-        	} else if (text.startsWith("ajout")) {
+        	} else if (text.startsWith("ajout ")) {
+            	text = text.replaceFirst("ajout ", "");
         		String[] decoupage = text.split(" ");
-        		if (decoupage.length == 3) {
-        			this.reply(replyToken, addOrReplaceBirthday(decoupage[1], decoupage[2]));
+        		if (decoupage.length >= 2) {
+        			this.reply(replyToken, addOrReplaceBirthday(new String(Arrays.copyOfRange(decoupage, 0, decoupage.length-2)), decoupage[decoupage.length-1]));
         		} else {
         			this.reply(replyToken, new TextMessage("Le format attendu est: @fub anniv ajout Machintruc 29-02"));
         		}
-        	}
+	    	} else if (text.startsWith("suppr ")) {
+            	text = text.replaceFirst("suppr ", "");
+    			this.reply(replyToken, removeBirthday(text));
+	    	}
         	return;
         }
         switch (text.toLowerCase()) {
