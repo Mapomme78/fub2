@@ -195,15 +195,15 @@ public class KitchenSinkController {
 
 	private static final SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
 	private static final String INSERT_STATEMENT = "INSERT INTO birthdays (pseudo, date, lastWished) VALUES(?, ?, ?)";
-	private static final String DEL_STATEMENT = "DELETE FROM birthdays WHERE pseudo=?";
+	private static final String DEL_STATEMENT = "DELETE FROM birthdays WHERE pseudo LIKE ?";
 	
     private Message addOrReplaceBirthday(String name, String dateAsString) {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
               PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
     			PreparedStatement stmt = connection.prepareStatement(INSERT_STATEMENT)) {
-           delStmt.setString(1, name);
+           delStmt.setString(1, name.strip());
            delStmt.executeUpdate();
-    		stmt.setString(1, name);
+    		stmt.setString(1, name.strip());
     		stmt.setString(2, dateAsString);
     		stmt.setInt(3, 0);
     		stmt.execute();
@@ -217,7 +217,7 @@ public class KitchenSinkController {
     private Message removeBirthday(String name) {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
     			PreparedStatement stmt = connection.prepareStatement(DEL_STATEMENT)) {
-    		stmt.setString(1, name);
+    		stmt.setString(1, name.strip());
     		stmt.executeUpdate();
     	} catch (Exception e) {
     		log.error("", e);
