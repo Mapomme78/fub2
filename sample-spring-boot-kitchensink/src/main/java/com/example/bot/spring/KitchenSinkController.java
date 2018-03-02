@@ -216,10 +216,10 @@ public class KitchenSinkController {
         log.info("Got text message from {}: {}", replyToken, text);
         switch (text.toLowerCase()) {
         	case "testfub":
-        		String userId = event.getSource().getUserId();
+        		String useId = event.getSource().getUserId();
         		String groupId = event.getSource().getGroupId();
         		String roomId = event.getSource().getRoomId();
-                this.replyText(replyToken, "user ID="+userId+", groupId="+groupId+", roomId="+roomId);
+                this.replyText(replyToken, "user ID="+useId+", groupId="+groupId+", roomId="+roomId);
         		break;
         	case "hello":
         	case "coucou":
