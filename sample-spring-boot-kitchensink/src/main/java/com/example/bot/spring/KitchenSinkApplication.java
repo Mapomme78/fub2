@@ -43,8 +43,6 @@ public class KitchenSinkApplication {
 
     public static Connection getConnection() throws URISyntaxException, SQLException {
     	String dbUrl = System.getenv("JDBC_DATABASE_URL");
-    	log.info("dbUrl="+dbUrl);
-    	dbUrl = dbUrl.replace("postgres:", "postgresql:");
     	Connection connection = DriverManager.getConnection(dbUrl);
     	try (Statement stmt = connection.createStatement()) {
     		stmt.execute("CREATE TABLE IF NOT EXISTS 'birthdays' (name text, date text, lastWished numeric, PRIMARY KEY (name))");
