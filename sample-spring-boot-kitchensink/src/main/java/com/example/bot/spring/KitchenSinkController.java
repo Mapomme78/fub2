@@ -352,11 +352,11 @@ public class KitchenSinkController {
         	return;
         }
         switch (text.toLowerCase()) {
-//        	case "testfub": // groupe "Francs Unis" = C051e35526afe7c0927737b2aa0ff16dc
-//        		String useId = event.getSource().getUserId();
-//        		String senderId = event.getSource().getSenderId();
-//                this.replyText(replyToken, "user ID="+useId+", senderId="+senderId+", source class="+event.getSource().getClass());
-//        		break;
+        	case "testfub": // groupe "Francs Unis" = C051e35526afe7c0927737b2aa0ff16dc
+        		String useId = event.getSource().getUserId();
+        		String senderId = event.getSource().getSenderId();
+                this.replyText(replyToken, "user ID="+useId+", senderId="+senderId+", source class="+event.getSource().getClass()+(char)0x100075);
+        		break;
         	case "hello":
         	case "coucou":
         	case "hi":
