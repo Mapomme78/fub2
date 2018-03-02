@@ -244,11 +244,11 @@ public class KitchenSinkController {
     				newLineToAdd.append(" souhaité pour la dernière fois en ");
     				newLineToAdd.append(lastWished);
     			}
-    			if (sb.length() + newStringToAdd.length() > 500) {
+    			if (sb.length() + newLineToAdd.length() > 500) {
     				ret.add(new TextMessage(sb.toString()));
     				sb = new StringBuffer(500);
     			}
-    			sb.append(newStringToAdd);
+    			sb.append(newLineToAdd);
     		}
     		if (sb.length() != 0) {
     			ret.add(new TextMessage(sb.toString()));
