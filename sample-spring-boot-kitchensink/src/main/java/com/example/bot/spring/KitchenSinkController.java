@@ -368,7 +368,7 @@ public class KitchenSinkController {
             	text = text.replaceFirst("ajout ", "");
         		String[] decoupage = text.split(" ");
         		if (decoupage.length >= 2) {
-        			this.reply(replyToken, addOrReplaceBirthday(new String(Arrays.copyOfRange(decoupage, 0, decoupage.length-2)), decoupage[decoupage.length-1]));
+        			this.reply(replyToken, addOrReplaceBirthday(String.join(Arrays.copyOfRange(decoupage, 0, decoupage.length-2)), decoupage[decoupage.length-1]));
         		} else {
         			this.reply(replyToken, new TextMessage("Le format attendu est: @fub anniv ajout Machintruc 29-02"));
         		}
