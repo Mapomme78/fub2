@@ -194,12 +194,15 @@ public class KitchenSinkController {
     }
 
 	private static final SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
-	private static final String INSERT_STATEMENT = "INSERT OR REPLACE INTO birthdays (name, date, lastWished) VALUES(?, ?, ?)";
+	private static final String INSERT_STATEMENT = "INSERT INTO birthdays (name, date, lastWished) VALUES(?, ?, ?)";
 	private static final String DEL_STATEMENT = "DELETE FROM birthdays WHERE name= ?";
 	
     private Message addOrReplaceBirthday(String name, String dateAsString) {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
+              PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
     			PreparedStatement stmt = connection.prepareStatement(INSERT_STATEMENT)) {
+           delStmt.setString(1, name);
+           delStmt.execute();
     		stmt.setString(1, name);
     		stmt.setString(2, dateAsString);
     		stmt.setInt(3, 0);
