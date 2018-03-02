@@ -27,6 +27,10 @@ import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.Statement;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -101,9 +105,6 @@ public class KitchenSinkController {
     @Autowired
     private LineMessagingClient lineMessagingClient;
     
-    private final static String BIRTHDAYS_FILE="birthdays";
-    private Map<String, BirthdayDetails> birthdays = null;
-
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
         checkBirthday();
@@ -192,82 +193,57 @@ public class KitchenSinkController {
         log.info("Received message(Ignored): {}", event);
     }
 
-	static private SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
-    private class BirthdayDetails implements Serializable {
-    	private static final long serialVersionUID = 1L;
-    	private long date;
-    	private int lastWishedYear;
-    	
-    	public BirthdayDetails(String dateAsString) throws IllegalArgumentException {
-    		this.date = getDateFromString(dateAsString);
-    		this.lastWishedYear = 0;
-    	}
-    	
-    	public void setWishedThisYear() {
-    		this.lastWishedYear = Calendar.getInstance().get(Calendar.YEAR);
-    	}
-    	
-    	private long getDateFromString(String dateAsString) throws IllegalArgumentException {
-    		try {
-    			Date parsedDate = minimalSDF.parse(dateAsString);
-        		if (parsedDate == null) {
-        			throw new IllegalArgumentException("Unable to parse "+dateAsString);
-        		}
-        		return parsedDate.getTime();
-    		} catch (Exception e) {
-    			throw new IllegalArgumentException("Unable to parse "+dateAsString);
-    		}
-    	}
-
-		public boolean shouldWishBirthday() {
-			return minimalSDF.format(new Date(System.currentTimeMillis())).equalsIgnoreCase(minimalSDF.format(new Date(date)));
-		}
-		
-		@Override
-		public String toString() {
-			if (lastWishedYear == 0) {
-				return minimalSDF.format(new Date(date))+" -> jamais souhaité";
-			} else {
-				return minimalSDF.format(new Date(date))+" souhaité pour la dernière fois en "+lastWishedYear;
-			}
-		}
-    }
-    
+	private static final SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
+	private static final String INSERT_STATEMENT = "INSERT OR REPLACE INTO 'birthdays' (name, date, lastWished) VALUES(?, ?, ?)";
+	private static final String DEL_STATEMENT = "DELETE FROM 'birthdays' WHERE name= ?";
+	
     private Message addOrReplaceBirthday(String name, String dateAsString) {
-    	if (birthdays == null) {
-    		retrieveBirthdays();
-    	}
-    	try {
-    		birthdays.put(name, new BirthdayDetails(dateAsString));
-        	storeBirthdays();
-    	} catch (IllegalArgumentException e) {
+    	try (	Connection connection = KitchenSinkApplication.getConnection();
+    			PreparedStatement stmt = connection.prepareStatement(INSERT_STATEMENT)) {
+    		stmt.setString(1, name);
+    		stmt.setString(2, dateAsString);
+    		stmt.setInt(3, 0);
+    		stmt.execute();
+    	} catch (Exception e) {
+    		log.error("", e);
     		return new TextMessage("Impossible de stocker la date d'anniversaire");
     	}
     	return new TextMessage("Date d'anniversaire de "+name+" enregistrée");
     }
     
     private Message removeBirthday(String name) {
-    	if (birthdays == null) {
-    		retrieveBirthdays();
+    	try (	Connection connection = KitchenSinkApplication.getConnection();
+    			PreparedStatement stmt = connection.prepareStatement(DEL_STATEMENT)) {
+    		stmt.setString(1, name);
+    		stmt.execute();
+    	} catch (Exception e) {
+    		log.error("", e);
+    		return new TextMessage("Impossible de supprimer la date d'anniversaire");
     	}
-    	if (birthdays.remove(name) == null) {
-    		return new TextMessage(name+" n'avait pas de date d'anniversaire enregistrée");
-    	}
-    	storeBirthdays();
     	return new TextMessage("Date d'anniversaire de "+name+" supprimée");
     }
     
     private List<Message> listBirthdays() {
-    	if (birthdays == null) {
-    		retrieveBirthdays();
-    	}
-    	if (birthdays.isEmpty()) {
-    		return Collections.singletonList(new TextMessage("Aucun anniversaire enregistré pour le moment"));
-    	} else {
-    		List<Message> ret = new ArrayList<>();
-    		StringBuffer sb = new StringBuffer(500);
-    		for (Entry<String, BirthdayDetails> entry: birthdays.entrySet()) {
-    			String newStringToAdd = entry.getKey()+"->"+entry.getValue();
+		List<Message> ret = new ArrayList<>();
+		StringBuffer sb = new StringBuffer(500);
+    	try (	Connection connection = KitchenSinkApplication.getConnection();
+    			Statement stmt = connection.createStatement()) {
+    		ResultSet rs = stmt.executeQuery("SELECT * from 'birthdays'");
+    		while (rs.next()) {
+    			String name = rs.getString(1);
+    			String date = rs.getString(2);
+    			int lastWished = rs.getInt(3);
+    			
+    			StringBuffer newLineToAdd = new StringBuffer();
+    			newLineToAdd.append(name);
+    			newLineToAdd.append(":");
+    			newLineToAdd.append(date);
+    			if (lastWished == 0) {
+    				newLineToAdd.append(" -> jamais souhaité");
+    			} else {
+    				newLineToAdd.append(" souhaité pour la dernière fois en ");
+    				newLineToAdd.append(lastWished);
+    			}
     			if (sb.length() + newStringToAdd.length() > 500) {
     				ret.add(new TextMessage(sb.toString()));
     				sb = new StringBuffer(500);
@@ -282,46 +258,28 @@ public class KitchenSinkController {
     }
     
     private void checkBirthday() {
-    	if (birthdays == null) {
-    		retrieveBirthdays();
-    	}
-    	for (Entry<String, BirthdayDetails> entry: birthdays.entrySet()) {
-    		if (entry.getValue().shouldWishBirthday()) {
-    			lineMessagingClient.pushMessage(new PushMessage("Cfdf6437983461c70bd606684ccf5d925", new TextMessage("Bon anniversaire "+entry.getKey())));
-//    			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+entry.getKey())));
-    			entry.getValue().setWishedThisYear();
+    	String currentDate = minimalSDF.format(new Date(System.currentTimeMillis()));
+    	int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+    	try (	Connection connection = KitchenSinkApplication.getConnection();
+    			Statement stmt = connection.createStatement()) {
+    		ResultSet rs = stmt.executeQuery("SELECT * from 'birthdays'");
+    		while (rs.next()) {
+    			String name = rs.getString(1);
+    			String date = rs.getString(2);
+    			int lastWished = rs.getInt(3);
+    			
+    			if (currentDate.equals(date) && lastWished != currentYear) {
+        			lineMessagingClient.pushMessage(new PushMessage("Cfdf6437983461c70bd606684ccf5d925", new TextMessage("Bon anniversaire "+name)));
+//        			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+name)));
+        			try (PreparedStatement updateStmt = connection.prepareStatement(INSERT_STATEMENT)) {
+        				updateStmt.setString(1, name);
+        				updateStmt.setString(2, date);
+        				updateStmt.setInt(3, currentYear);
+        				updateStmt.execute();
+        			}
+    			}
     		}
     	}
-    }
-    
-    private void storeBirthdays() {
-    	File birthdaysFile = new File(KitchenSinkApplication.downloadedContentDir.toFile(), BIRTHDAYS_FILE);
-    	if (!birthdaysFile.exists()) {
-    		try {
-    			birthdaysFile.createNewFile();
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    			return;
-    		}
-    	}
-		try (FileOutputStream fos = new FileOutputStream(birthdaysFile); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
-			oos.writeObject(birthdays);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-    }
-    
-    private void retrieveBirthdays() {
-    	File birthdaysFile = new File(KitchenSinkApplication.downloadedContentDir.toFile(), BIRTHDAYS_FILE);
-    	if (birthdaysFile.exists()) {
-    		try (FileInputStream fis = new FileInputStream(birthdaysFile); ObjectInputStream ois = new ObjectInputStream(fis)) {
-    			birthdays = (Map<String, KitchenSinkController.BirthdayDetails>) ois.readObject();
-    			return;
-    		} catch (Exception e) {
-    			e.printStackTrace();
-    		}
-    	}
-		birthdays = new HashMap<>();
     }
     
     private void reply(@NonNull String replyToken, @NonNull Message message) {

@@ -17,10 +17,15 @@
 package com.example.bot.spring;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,4 +41,12 @@ public class KitchenSinkApplication {
         SpringApplication.run(KitchenSinkApplication.class, args);
     }
 
+    public static Connection getConnection() throws URISyntaxException, SQLException {
+    	String dbUrl = System.getenv("JDBC_DATABASE_URL");
+    	Connection connection = DriverManager.getConnection(dbUrl);
+    	try (Statement stmt = connection.createStatement()) {
+    		stmt.execute("CREATE TABLE IF NOT EXISTS 'birthdays' (name text, date text, lastWished numeric, PRIMARY KEY (name))");
+    	}
+    	return connection;
+    }
 }
