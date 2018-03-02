@@ -92,6 +92,7 @@ subprojects {
             dependency 'com.squareup.retrofit2:retrofit:2.3.0'
             dependency 'org.assertj:assertj-core:3.9.0'
             dependency 'org.projectlombok:lombok:1.16.18'
+            dependency ‘org.postgresql:postgresql:42.2.1’
         }
     }
 
