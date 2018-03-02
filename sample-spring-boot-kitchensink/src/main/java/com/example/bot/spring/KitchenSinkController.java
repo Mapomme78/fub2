@@ -225,7 +225,7 @@ public class KitchenSinkController {
 		}
     }
     
-    private List<Message> addOrReplaceBirthday(String name, String dateAsString) {
+    private Message addOrReplaceBirthday(String name, String dateAsString) {
     	if (birthdays == null) {
     		retrieveBirthdays();
     	}
@@ -238,7 +238,7 @@ public class KitchenSinkController {
     	return new TextMessage("Date d'anniversaire de "+name+" enregistrée");
     }
     
-    private List<Message> removeBirthday(String name) {
+    private Message removeBirthday(String name) {
     	if (birthdays == null) {
     		retrieveBirthdays();
     	}
