@@ -16,20 +16,33 @@
 
 package com.example.bot.spring;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStream;
+import java.io.Serializable;
 import java.io.UncheckedIOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
+
+import javax.swing.event.ListSelectionEvent;
 
 import com.linecorp.bot.model.message.template.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,6 +73,7 @@ import com.linecorp.bot.model.event.message.VideoMessageContent;
 import com.linecorp.bot.model.event.source.GroupSource;
 import com.linecorp.bot.model.event.source.RoomSource;
 import com.linecorp.bot.model.event.source.Source;
+import com.linecorp.bot.model.PushMessage;
 import com.linecorp.bot.model.message.AudioMessage;
 import com.linecorp.bot.model.message.ImageMessage;
 import com.linecorp.bot.model.message.ImagemapMessage;
@@ -86,6 +100,9 @@ import lombok.extern.slf4j.Slf4j;
 public class KitchenSinkController {
     @Autowired
     private LineMessagingClient lineMessagingClient;
+    
+    private final static String BIRTHDAYS_FILE="birthdays";
+    private Map<String, BirthdayDetails> birthdays = null;
 
     @EventMapping
     public void handleTextMessageEvent(MessageEvent<TextMessageContent> event) throws Exception {
@@ -175,8 +192,122 @@ public class KitchenSinkController {
         log.info("Received message(Ignored): {}", event);
     }
 
-    private void checkBirthday() {
+    private class BirthdayDetails implements Serializable {
+    	private static final long serialVersionUID = 1L;
+    	private long date;
+    	private int lastWishedYear;
     	
+    	public BirthdayDetails(long date, int lastWishedYear) {
+    		this.date = date;
+    		this.lastWishedYear = lastWishedYear;
+    	}
+    	
+    	public BirthdayDetails(String dateAsString) throws IllegalArgumentException {
+    		this.date = getDateFromString(dateAsString);
+    		this.lastWishedYear = 1970;
+    	}
+    	
+    	public void setWishedThisYear() {
+    		this.lastWishedYear = Calendar.getInstance().get(Calendar.YEAR);
+    	}
+    	
+    	private long getDateFromString(String dateAsString) throws IllegalArgumentException {
+    		return 0;
+    	}
+
+		public boolean shouldWishBirthday() {
+			return false;
+		}
+		
+		@Override
+		public String toString() {
+			return "";
+		}
+    }
+    
+    private List<Message> addOrReplaceBirthday(String name, String dateAsString) {
+    	if (birthdays == null) {
+    		retrieveBirthdays();
+    	}
+    	try {
+    		birthdays.put(name, new BirthdayDetails(dateAsString));
+        	storeBirthdays();
+    	} catch (IllegalArgumentException e) {
+    		return new TextMessage("Impossible de stocker la date d'anniversaire");
+    	}
+    	return new TextMessage("Date d'anniversaire de "+name+" enregistrée");
+    }
+    
+    private List<Message> removeBirthday(String name) {
+    	if (birthdays == null) {
+    		retrieveBirthdays();
+    	}
+    	if (birthdays.remove(name) == null) {
+    		return new TextMessage(name+" n'avait pas de date d'anniversaire enregistrée");
+    	}
+    	storeBirthdays();
+    	return new TextMessage("Date d'anniversaire de "+name+" supprimée");
+    }
+    
+    private List<Message> listBirthdays() {
+    	if (birthdays == null) {
+    		retrieveBirthdays();
+    	}
+    	if (birthdays.isEmpty()) {
+    		return Collections.singletonList(new TextMessage("Aucun anniversaire enregistré pour le moment"));
+    	} else {
+    		List<Message> ret = new ArrayList<>();
+    		StringBuffer sb = new StringBuffer(500);
+    		for (Entry<String, BirthdayDetails> entry: birthdays.entrySet()) {
+    			String newStringToAdd = entry.getKey()+"->"+entry.getValue();
+    			if (sb.length() + newStringToAdd.length() > 500) {
+    				ret.add(new TextMessage(sb.toString()));
+    				sb = new StringBuffer(500);
+    			}
+    			sb.append(newStringToAdd);
+    		}
+    		if (sb.length() != 0) {
+    			ret.add(new TextMessage(sb.toString()));
+    		}
+    		return ret;
+    	}
+    }
+    
+    private void checkBirthday() {
+    	if (birthdays == null) {
+    		retrieveBirthdays();
+    	}
+    	for (Entry<String, BirthdayDetails> entry: birthdays.entrySet()) {
+    		if (entry.getValue().shouldWishBirthday()) {
+    			lineMessagingClient.pushMessage(new PushMessage("C051e35526afe7c0927737b2aa0ff16dc", new TextMessage("Bon anniversaire "+entry.getKey())));
+    			entry.getValue().setWishedThisYear();
+    		}
+    	}
+    }
+    
+    private void storeBirthdays() {
+    	File birthdaysFile = new File(KitchenSinkApplication.downloadedContentDir.toFile(), BIRTHDAYS_FILE);
+    	if (!birthdaysFile.exists()) {
+    		birthdaysFile.createNewFile();
+    	}
+		try (FileOutputStream fos = new FileOutputStream(birthdaysFile); ObjectOutputStream oos = new ObjectOutputStream(fos)) {
+			oos.writeObject(birthdays);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+    }
+    
+    private void retrieveBirthdays() {
+    	File birthdaysFile = new File(KitchenSinkApplication.downloadedContentDir.toFile(), BIRTHDAYS_FILE);
+    	if (birthdaysFile.exists()) {
+    		try (FileInputStream fis = new FileInputStream(birthdaysFile); ObjectInputStream ois = new ObjectInputStream(fis)) {
+    			birthdays = (Map<String, BirthdayDetails>) ois.readObject();
+    			return;
+    		} catch (Exception e) {
+    			e.printStackTrace();
+    		}
+    	}
+		birthdays = new HashMap<>();
     }
     
     private void reply(@NonNull String replyToken, @NonNull Message message) {
@@ -214,12 +345,19 @@ public class KitchenSinkController {
         }
         text = text.replaceFirst("@fub ", "");
         log.info("Got text message from {}: {}", replyToken, text);
+        if (text.startsWith("anniv ")) {
+        	text = text.replaceFirst("anniv ", "");
+        	if (text.startsWith("list")) {
+        		this.reply(replyToken, listBirthdays());
+        	}
+        	return;
+        }
         switch (text.toLowerCase()) {
-        	case "testfub":
-        		String useId = event.getSource().getUserId();
-        		String senderId = event.getSource().getSenderId();
-                this.replyText(replyToken, "user ID="+useId+", senderId="+senderId+", source class="+event.getSource().getClass());
-        		break;
+//        	case "testfub": // groupe "Francs Unis" = C051e35526afe7c0927737b2aa0ff16dc
+//        		String useId = event.getSource().getUserId();
+//        		String senderId = event.getSource().getSenderId();
+//                this.replyText(replyToken, "user ID="+useId+", senderId="+senderId+", source class="+event.getSource().getClass());
+//        		break;
         	case "hello":
         	case "coucou":
         	case "hi":
