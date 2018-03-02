@@ -254,6 +254,9 @@ public class KitchenSinkController {
     			ret.add(new TextMessage(sb.toString()));
     		}
     		return ret;
+    	} catch (Exception e) {
+    		log.error("", e);
+    		return Collections.singletonList(new TextMessage("Echec lors de la récupération de la liste d'anniversaires, désolé..."));
     	}
     }
     
@@ -279,6 +282,8 @@ public class KitchenSinkController {
         			}
     			}
     		}
+    	} catch (Exception e) {
+    		log.error("", e);
     	}
     }
     
