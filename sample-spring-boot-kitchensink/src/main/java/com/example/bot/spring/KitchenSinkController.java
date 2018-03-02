@@ -202,7 +202,7 @@ public class KitchenSinkController {
               PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
     			PreparedStatement stmt = connection.prepareStatement(INSERT_STATEMENT)) {
            delStmt.setString(1, name);
-           delStmt.execute();
+           delStmt.executeUpdate();
     		stmt.setString(1, name);
     		stmt.setString(2, dateAsString);
     		stmt.setInt(3, 0);
@@ -218,7 +218,7 @@ public class KitchenSinkController {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
     			PreparedStatement stmt = connection.prepareStatement(DEL_STATEMENT)) {
     		stmt.setString(1, name);
-    		stmt.execute();
+    		stmt.executeUpdate();
     	} catch (Exception e) {
     		log.error("", e);
     		return new TextMessage("Impossible de supprimer la date d'anniversaire");
@@ -280,7 +280,7 @@ public class KitchenSinkController {
         			try (   PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
                           PreparedStatement updateStmt = connection.prepareStatement(INSERT_STATEMENT)) {
                       delStmt.setString(1, name);
-                      delStmt.execute();
+                      delStmt.executeUpdate();
         				updateStmt.setString(1, name);
         				updateStmt.setString(2, date);
         				updateStmt.setInt(3, currentYear);
