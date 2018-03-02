@@ -17,6 +17,7 @@
 package com.example.bot.spring;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.FileSystems;
@@ -49,11 +50,18 @@ public class KitchenSinkApplication {
 
     public static Connection getConnection() throws URISyntaxException, SQLException {
     	//return dataSource.getConnection();
-    	String dbUrl = System.getenv("JDBC_DATABASE_URL");
+URI dbUri = new URI(System.getenv("DATABASE_URL"));
+
+        String username = dbUri.getUserInfo().split(":")[0];
+        String password = dbUri.getUserInfo().split(":")[1];
+        String dbUrl = "jdbc:postgresql://" + dbUri.getHost() + dbUri.getPath();
+
+        return DriverManager.getConnection(dbUrl, username, password);
+    	/*String dbUrl = System.getenv("JDBC_DATABASE_URL");
     	Connection connection = DriverManager.getConnection(dbUrl);
     	try (Statement stmt = connection.createStatement()) {
     		stmt.execute("CREATE TABLE IF NOT EXISTS 'birthdays' (name text, date text, lastWished numeric, PRIMARY KEY (name))");
     	}
-    	return connection;
+    	return connection; */
     }
 }
