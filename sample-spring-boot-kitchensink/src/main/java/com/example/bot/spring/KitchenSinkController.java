@@ -198,14 +198,9 @@ public class KitchenSinkController {
     	private long date;
     	private int lastWishedYear;
     	
-    	public BirthdayDetails(long date, int lastWishedYear) {
-    		this.date = date;
-    		this.lastWishedYear = lastWishedYear;
-    	}
-    	
     	public BirthdayDetails(String dateAsString) throws IllegalArgumentException {
     		this.date = getDateFromString(dateAsString);
-    		this.lastWishedYear = 1970;
+    		this.lastWishedYear = 0;
     	}
     	
     	public void setWishedThisYear() {
@@ -230,7 +225,11 @@ public class KitchenSinkController {
 		
 		@Override
 		public String toString() {
-			return "";
+			if (lastWishedYear == 0) {
+				return minimalSDF.format(new Date(date))+" -> jamais souhaité";
+			} else {
+				return minimalSDF.format(new Date(date))+" souhaité pour la dernière fois en "+lastWishedYear;
+			}
 		}
     }
     
@@ -368,7 +367,9 @@ public class KitchenSinkController {
             	text = text.replaceFirst("ajout ", "");
         		String[] decoupage = text.split(" ");
         		if (decoupage.length >= 2) {
-        			this.reply(replyToken, addOrReplaceBirthday(String.join(Arrays.copyOfRange(decoupage, 0, decoupage.length-2)), decoupage[decoupage.length-1]));
+        			String date = decoupage[decoupage.length-1];
+        			String name = text.replaceAll(date, "");
+        			this.reply(replyToken, addOrReplaceBirthday(name, date));
         		} else {
         			this.reply(replyToken, new TextMessage("Le format attendu est: @fub anniv ajout Machintruc 29-02"));
         		}
