@@ -27,12 +27,18 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import javax.sql.DataSource;
+
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.beans.factory.annotation.Autowired;
 
 @SpringBootApplication
 public class KitchenSinkApplication {
     static Path downloadedContentDir;
+    
+    @Autowired
+    private static DataSource dataSource;
 
     public static void main(String[] args) throws IOException {
     	try {
@@ -42,11 +48,12 @@ public class KitchenSinkApplication {
     }
 
     public static Connection getConnection() throws URISyntaxException, SQLException {
-    	String dbUrl = System.getenv("JDBC_DATABASE_URL");
-    	Connection connection = DriverManager.getConnection(dbUrl);
-    	try (Statement stmt = connection.createStatement()) {
-    		stmt.execute("CREATE TABLE IF NOT EXISTS 'birthdays' (name text, date text, lastWished numeric, PRIMARY KEY (name))");
-    	}
-    	return connection;
+    	return dataSource.getConnection();
+//    	String dbUrl = System.getenv("JDBC_DATABASE_URL");
+//    	Connection connection = DriverManager.getConnection(dbUrl);
+//    	try (Statement stmt = connection.createStatement()) {
+//    		stmt.execute("CREATE TABLE IF NOT EXISTS 'birthdays' (name text, date text, lastWished numeric, PRIMARY KEY (name))");
+//    	}
+//    	return connection;
     }
 }
