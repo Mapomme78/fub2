@@ -201,9 +201,9 @@ public class KitchenSinkController {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
               PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
     			PreparedStatement stmt = connection.prepareStatement(INSERT_STATEMENT)) {
-           delStmt.setString(1, name.strip());
+           delStmt.setString(1, name.trim());
            delStmt.executeUpdate();
-    		stmt.setString(1, name.strip());
+    		stmt.setString(1, name.trim());
     		stmt.setString(2, dateAsString);
     		stmt.setInt(3, 0);
     		stmt.execute();
@@ -217,7 +217,7 @@ public class KitchenSinkController {
     private Message removeBirthday(String name) {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
     			PreparedStatement stmt = connection.prepareStatement(DEL_STATEMENT)) {
-    		stmt.setString(1, name.strip());
+    		stmt.setString(1, name.trim());
     		stmt.executeUpdate();
     	} catch (Exception e) {
     		log.error("", e);
