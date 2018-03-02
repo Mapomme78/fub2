@@ -194,8 +194,8 @@ public class KitchenSinkController {
     }
 
 	private static final SimpleDateFormat minimalSDF = new SimpleDateFormat("dd-MM");
-	private static final String INSERT_STATEMENT = "INSERT OR REPLACE INTO 'birthdays' (name, date, lastWished) VALUES(?, ?, ?)";
-	private static final String DEL_STATEMENT = "DELETE FROM 'birthdays' WHERE name= ?";
+	private static final String INSERT_STATEMENT = "INSERT OR REPLACE INTO birthdays (name, date, lastWished) VALUES(?, ?, ?)";
+	private static final String DEL_STATEMENT = "DELETE FROM birthdays WHERE name= ?";
 	
     private Message addOrReplaceBirthday(String name, String dateAsString) {
     	try (	Connection connection = KitchenSinkApplication.getConnection();
@@ -228,7 +228,7 @@ public class KitchenSinkController {
 		StringBuffer sb = new StringBuffer(500);
     	try (	Connection connection = KitchenSinkApplication.getConnection();
     			Statement stmt = connection.createStatement()) {
-    		ResultSet rs = stmt.executeQuery("SELECT * from 'birthdays'");
+    		ResultSet rs = stmt.executeQuery("SELECT * from birthdays");
     		while (rs.next()) {
     			String name = rs.getString(1);
     			String date = rs.getString(2);
@@ -265,7 +265,7 @@ public class KitchenSinkController {
     	int currentYear = Calendar.getInstance().get(Calendar.YEAR);
     	try (	Connection connection = KitchenSinkApplication.getConnection();
     			Statement stmt = connection.createStatement()) {
-    		ResultSet rs = stmt.executeQuery("SELECT * from 'birthdays'");
+    		ResultSet rs = stmt.executeQuery("SELECT * from birthdays");
     		while (rs.next()) {
     			String name = rs.getString(1);
     			String date = rs.getString(2);
