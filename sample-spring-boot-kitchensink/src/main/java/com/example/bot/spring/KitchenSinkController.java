@@ -391,9 +391,9 @@ if (sb.length() != 0) {
         log.info("Got text message from {}: {}", replyToken, text);
         if (text.startsWith("anniv ")) {
         	text = text.replaceFirst("anniv ", "");
-        	if (text.startsWith("list")) {
+        	if (text.equalsIgnoreCase("liste")) {
         		this.reply(replyToken, listBirthdaysOld());
-        	} else if (text.startsWith("list2")) {
+        	} else if (text.equalsIgnoreCase("liste2")) {
         		this.reply(replyToken, listBirthdays());
         	} else if (text.startsWith("ajout ")) {
             	text = text.replaceFirst("ajout ", "");
