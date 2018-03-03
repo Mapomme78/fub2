@@ -231,7 +231,7 @@ public class KitchenSinkController {
     	return new TextMessage("Date d'anniversaire de "+name+" supprimée");
     }
     
-    private List<Message> listBirthdays() {
+    private List<Message> listBirthdaysOld() {
 		List<Message> ret = new ArrayList<>();
 		StringBuffer sb = new StringBuffer(500);
     	try (	Connection connection = KitchenSinkApplication.getConnection();
@@ -271,6 +271,58 @@ public class KitchenSinkController {
     	}
     }
     
+   private List<Message> listBirthdays() {
+    	Date currentDate = new Date(System.currentTimeMillis());
+    	int currentYear = Calendar.getInstance().get(Calendar.YEAR);
+       Map<Date, String> lignes = new HashMap<>();
+		List<Message> ret = new ArrayList<>();
+		StringBuffer sb = new StringBuffer(500);
+    	try (	Connection connection = KitchenSinkApplication.getConnection();
+    			Statement stmt = connection.createStatement()) {
+    		ResultSet rs = stmt.executeQuery("SELECT * from birthdays");
+    		while (rs.next()) {
+    			String name = rs.getString(1);
+    			String date = rs.getString(2);
+    			int lastWished = rs.getInt(3);
+    			
+    			StringBuffer newLineToAdd = new StringBuffer();
+    			newLineToAdd.append(name);
+    			newLineToAdd.append(":");
+    			newLineToAdd.append(date);
+    			if (lastWished == 0) {
+    				newLineToAdd.append(" -> jamais souhaité");
+    			} else {
+    				newLineToAdd.append(" souhaité en ");
+    				newLineToAdd.append(lastWished);
+    			}
+               newLineToAdd.append("\n");
+               Date dateReele = minimalSDF.parse(date);
+               dateReele.setYear(currentYear-1900);
+               if (dateReele.before(currentDate)) {
+                   dateReele.setYear(currentYear-1900+1);
+               }
+               log.info("date prochain anniv "+name+"="+dateReele);
+               lignes.put(dateReelle, newLineToAdd.toString());
+     		}
+   	} catch (Exception e) {
+    		log.error("", e);
+    		return Collections.singletonList(new TextMessage("Echec lors de la récupération de la liste d'anniversaires, désolé..."));
+    	}
+       for (Date dateAnniv:lignes.keySet().sort()) {
+           if (sb.length() + lignes.get(dateAnniv).length() > 500) {
+    		     ret.add(new TextMessage(sb.toString()));
+    			  sb = new StringBuffer(500);
+    		}
+    		sb.append(lignes.get(dateAnniv));
+       }
+if (sb.length() != 0) {
+    			ret.add(new TextMessage(sb.toString()));
+    		} else if (ret.isEmpty()) {
+             return Collections.singletonList(new TextMessage("La liste d'anniversaires est vide, désolé..."));
+           }
+    		return ret;
+    }
+
     private void checkBirthday() {
     	String currentDate = minimalSDF.format(new Date(System.currentTimeMillis()));
     	int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -339,6 +391,8 @@ public class KitchenSinkController {
         if (text.startsWith("anniv ")) {
         	text = text.replaceFirst("anniv ", "");
         	if (text.startsWith("list")) {
+        		this.reply(replyToken, listBirthdaysOld());
+        	} else if (text.startsWith("list2")) {
         		this.reply(replyToken, listBirthdays());
         	} else if (text.startsWith("ajout ")) {
             	text = text.replaceFirst("ajout ", "");
