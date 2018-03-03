@@ -263,7 +263,11 @@ public class KitchenSinkController {
                    dateReele.setYear(currentYear-1900+1);
                }
                log.info("date prochain anniv "+name+"="+dateReele);
-               lignes.put(dateReele, newLineToAdd.toString());
+                if (lignes.hasKey(dateReele)) {
+                   lignes.put(dateReele, lignes.get(dateReele)+ newLineToAdd.toString());
+                } else {
+                   lignes.put(dateReele, newLineToAdd.toString());
+                }
      		}
    	} catch (Exception e) {
     		log.error("", e);
