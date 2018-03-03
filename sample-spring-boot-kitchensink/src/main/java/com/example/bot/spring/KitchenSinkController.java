@@ -42,6 +42,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.TreeMap;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
@@ -274,7 +275,7 @@ public class KitchenSinkController {
    private List<Message> listBirthdays() {
     	Date currentDate = new Date(System.currentTimeMillis());
     	int currentYear = Calendar.getInstance().get(Calendar.YEAR);
-       Map<Date, String> lignes = new HashMap<>();
+       Map<Date, String> lignes = new TreeMap<>();
 		List<Message> ret = new ArrayList<>();
 		StringBuffer sb = new StringBuffer(500);
     	try (	Connection connection = KitchenSinkApplication.getConnection();
@@ -302,13 +303,13 @@ public class KitchenSinkController {
                    dateReele.setYear(currentYear-1900+1);
                }
                log.info("date prochain anniv "+name+"="+dateReele);
-               lignes.put(dateReelle, newLineToAdd.toString());
+               lignes.put(dateReele, newLineToAdd.toString());
      		}
    	} catch (Exception e) {
     		log.error("", e);
     		return Collections.singletonList(new TextMessage("Echec lors de la récupération de la liste d'anniversaires, désolé..."));
     	}
-       for (Date dateAnniv:lignes.keySet().sort()) {
+       for (Date dateAnniv:lignes.keySet()) {
            if (sb.length() + lignes.get(dateAnniv).length() > 500) {
     		     ret.add(new TextMessage(sb.toString()));
     			  sb = new StringBuffer(500);
