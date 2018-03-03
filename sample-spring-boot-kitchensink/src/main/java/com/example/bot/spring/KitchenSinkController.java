@@ -231,47 +231,7 @@ public class KitchenSinkController {
     	}
     	return new TextMessage("Date d'anniversaire de "+name+" supprimée");
     }
-    
-    private List<Message> listBirthdaysOld() {
-		List<Message> ret = new ArrayList<>();
-		StringBuffer sb = new StringBuffer(500);
-    	try (	Connection connection = KitchenSinkApplication.getConnection();
-    			Statement stmt = connection.createStatement()) {
-    		ResultSet rs = stmt.executeQuery("SELECT * from birthdays");
-    		while (rs.next()) {
-    			String name = rs.getString(1);
-    			String date = rs.getString(2);
-    			int lastWished = rs.getInt(3);
-    			
-    			StringBuffer newLineToAdd = new StringBuffer();
-    			newLineToAdd.append(name);
-    			newLineToAdd.append(":");
-    			newLineToAdd.append(date);
-    			if (lastWished == 0) {
-    				newLineToAdd.append(" -> jamais souhaité");
-    			} else {
-    				newLineToAdd.append(" souhaité pour la dernière fois en ");
-    				newLineToAdd.append(lastWished);
-    			}
-               newLineToAdd.append("\n");
-    			if (sb.length() + newLineToAdd.length() > 500) {
-    				ret.add(new TextMessage(sb.toString()));
-    				sb = new StringBuffer(500);
-    			}
-    			sb.append(newLineToAdd);
-    		}
-    		if (sb.length() != 0) {
-    			ret.add(new TextMessage(sb.toString()));
-    		} else if (ret.isEmpty()) {
-             return Collections.singletonList(new TextMessage("La liste d'anniversaires est vide, désolé..."));
-           }
-    		return ret;
-    	} catch (Exception e) {
-    		log.error("", e);
-    		return Collections.singletonList(new TextMessage("Echec lors de la récupération de la liste d'anniversaires, désolé..."));
-    	}
-    }
-    
+        
    private List<Message> listBirthdays() {
     	Date currentDate = new Date(System.currentTimeMillis());
     	int currentYear = Calendar.getInstance().get(Calendar.YEAR);
@@ -293,7 +253,7 @@ public class KitchenSinkController {
     			if (lastWished == 0) {
     				newLineToAdd.append(" -> jamais souhaité");
     			} else {
-    				newLineToAdd.append(" souhaité en ");
+    				newLineToAdd.append(" -> souhaité en ");
     				newLineToAdd.append(lastWished);
     			}
                newLineToAdd.append("\n");
@@ -392,8 +352,6 @@ if (sb.length() != 0) {
         if (text.startsWith("anniv ")) {
         	text = text.replaceFirst("anniv ", "");
         	if (text.equalsIgnoreCase("liste")) {
-        		this.reply(replyToken, listBirthdaysOld());
-        	} else if (text.equalsIgnoreCase("liste2")) {
         		this.reply(replyToken, listBirthdays());
         	} else if (text.startsWith("ajout ")) {
             	text = text.replaceFirst("ajout ", "");
