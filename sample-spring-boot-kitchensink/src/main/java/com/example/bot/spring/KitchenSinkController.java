@@ -198,6 +198,11 @@ public class KitchenSinkController {
 	private static final String DEL_STATEMENT = "DELETE FROM birthdays WHERE pseudo LIKE ?";
 	
     private Message addOrReplaceBirthday(String name, String dateAsString) {
+       try {
+            log.info("date lue="+minimalSDF.parse(dateAsString));
+           } catch (Exception e) {
+            return new TextMessage("Impossible de stocker la date d'anniversaire. Le format est jour-mois");
+           }
     	try (	Connection connection = KitchenSinkApplication.getConnection();
               PreparedStatement delStmt = connection.prepareStatement(DEL_STATEMENT);
     			PreparedStatement stmt = connection.prepareStatement(INSERT_STATEMENT)) {
